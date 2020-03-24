@@ -9,6 +9,6 @@ namespace ApiCaixaEletronico.DTO.Context
         public int Id_Agencia { get; set; }
 
         [Column("NOME")]
-        public int Nome_Agencia { get; set; }        
+        public string Nome_Agencia { get; set; }        
     }
 }

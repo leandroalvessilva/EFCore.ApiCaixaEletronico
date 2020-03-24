@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29911.84
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiCaixaEletronico", "ApiCaixaEletronico.csproj", "{DFE1EF46-1DCA-4F9F-818C-5FB59C46FDDF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiCaixaEletronico", "ApiCaixaEletronico.csproj", "{DFE1EF46-1DCA-4F9F-818C-5FB59C46FDDF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiCaixaEletronico.DAO", "..\ApiCaixaEletronico.DAO\ApiCaixaEletronico.DAO.csproj", "{FAA9F234-7FFB-461D-ADE3-9457CCDECE14}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiCaixaEletronico.DAO", "..\ApiCaixaEletronico.DAO\ApiCaixaEletronico.DAO.csproj", "{FAA9F234-7FFB-461D-ADE3-9457CCDECE14}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiCaixaEletronico.DTO", "..\ApiCaixaEletronico.DTO\ApiCaixaEletronico.DTO.csproj", "{3631D4D0-ECAE-48EC-A6B7-4A50B04F1DB8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiCaixaEletronico.DTO", "..\ApiCaixaEletronico.DTO\ApiCaixaEletronico.DTO.csproj", "{3631D4D0-ECAE-48EC-A6B7-4A50B04F1DB8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiCaixaEletronico.Service", "..\ApiCaixaEletronico.Service\ApiCaixaEletronico.Service.csproj", "{3890B7BB-51EA-46B5-AE77-0238E743B7B7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiCaixaEletronico.Service", "..\ApiCaixaEletronico.Service\ApiCaixaEletronico.Service.csproj", "{3890B7BB-51EA-46B5-AE77-0238E743B7B7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiCaixaEletronico.Tests", "..\ApiCaixaEletronico.Tests\ApiCaixaEletronico.Tests.csproj", "{33466242-7C49-4351-BC65-AA6497DCB77B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiCaixaEletronico.Tests", "..\ApiCaixaEletronico.Tests\ApiCaixaEletronico.Tests.csproj", "{C89F7D51-6C2B-4313-976C-4E1D6DF2510C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +35,10 @@ Global
 		{3890B7BB-51EA-46B5-AE77-0238E743B7B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3890B7BB-51EA-46B5-AE77-0238E743B7B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3890B7BB-51EA-46B5-AE77-0238E743B7B7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{33466242-7C49-4351-BC65-AA6497DCB77B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{33466242-7C49-4351-BC65-AA6497DCB77B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{33466242-7C49-4351-BC65-AA6497DCB77B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{33466242-7C49-4351-BC65-AA6497DCB77B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C89F7D51-6C2B-4313-976C-4E1D6DF2510C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C89F7D51-6C2B-4313-976C-4E1D6DF2510C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C89F7D51-6C2B-4313-976C-4E1D6DF2510C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C89F7D51-6C2B-4313-976C-4E1D6DF2510C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

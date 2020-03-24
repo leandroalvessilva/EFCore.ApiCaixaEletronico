@@ -9,18 +9,18 @@ namespace ApiCaixaEletronico.DTO.Context
         public int Id_Cliente { get; set; }
 
         [Column("NOME_CLI")]
-        public int Nome_Cliente { get; set; }
+        public string Nome_Cliente { get; set; }
 
         [Column("CPF_CLI")]
-        public int CpfCli { get; set; }
+        public long CpfCli { get; set; }
 
         [Column("RG_CLI")]
-        public int RgCli { get; set; }
+        public long RgCli { get; set; }
 
         [Column("TELEFONE")]
-        public int Telefone { get; set; }
+        public long Telefone { get; set; }
 
         [Column("EMAIL")]
-        public int Email { get; set; }
+        public string Email { get; set; }
     }
 }

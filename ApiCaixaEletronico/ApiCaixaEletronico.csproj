@@ -21,7 +21,6 @@
     <ProjectReference Include="..\ApiCaixaEletronico.DAO\ApiCaixaEletronico.DAO.csproj" />
     <ProjectReference Include="..\ApiCaixaEletronico.DTO\ApiCaixaEletronico.DTO.csproj" />
     <ProjectReference Include="..\ApiCaixaEletronico.Service\ApiCaixaEletronico.Service.csproj" />
-    <ProjectReference Include="..\ApiCaixaEletronico.Tests\ApiCaixaEletronico.Tests.csproj" />
   </ItemGroup>
 
 

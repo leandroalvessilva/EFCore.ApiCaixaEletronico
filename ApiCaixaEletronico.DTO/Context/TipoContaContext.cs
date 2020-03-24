@@ -9,6 +9,6 @@ namespace ApiCaixaEletronico.DTO.Context
         public int Codigo_TipoConta { get; set; }
 
         [Column("DESC_TIPCONTA")]
-        public int Descricao_TipoConta { get; set; }        
+        public string Descricao_TipoConta { get; set; }        
     }
 }

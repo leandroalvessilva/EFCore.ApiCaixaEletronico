@@ -31,6 +31,7 @@ namespace ApiCaixaEletronico.Controllers
                 return StatusCode(500, new Retorno()
                 {
                     Codigo = 500,
+                    Data = null,
                     Mensagem = ex.Message
                 });
             }
