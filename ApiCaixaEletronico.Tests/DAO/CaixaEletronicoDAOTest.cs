@@ -105,5 +105,43 @@ namespace ApiCaixaEletronico.Tests.DAO
             }
         }
 
+        [TestMethod]
+        public void CaixaEletronicoDAOTest_Login()
+        {
+            var options = testesUteis.CriarDataBaseTeste("LoginDAOTeste");
+
+            using (var context = new CommonDbContext(options))
+            {
+                context.Contas.Add(testesUteis.ListarContas());
+
+                context.SaveChanges();
+
+                caixaEletronicoDao = new CaixaEletronicoDAO(context);
+
+                var result = caixaEletronicoDao.Login(testesUteis.ListarContas().CpfCliente, testesUteis.ListarContas().SenhaConta);
+
+                Assert.IsNotNull(result);
+            }
+        }
+
+        [TestMethod]
+        public void CaixaEletronicoDAOTest_ListarUsuario()
+        {
+            var options = testesUteis.CriarDataBaseTeste("ListarUsuarioDAOTeste");
+
+            using (var context = new CommonDbContext(options))
+            {
+                context.Contas.Add(testesUteis.ListarContas());
+
+                context.SaveChanges();
+
+                caixaEletronicoDao = new CaixaEletronicoDAO(context);
+
+                var result = caixaEletronicoDao.ListarUsuario(testesUteis.ListarContas().CpfCliente, testesUteis.ListarContas().SenhaConta);
+
+                Assert.IsNotNull(result);
+            }
+        }
+
     }
 }

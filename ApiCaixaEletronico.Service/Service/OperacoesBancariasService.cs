@@ -26,7 +26,7 @@ namespace ApiCaixaEletronico.Service.Service
                 {
                     Codigo = 200,
                     Data = JsonConvert.SerializeObject(result),
-                    Mensagem = "Consultado efetuada com sucesso"
+                    Mensagem = "Consulta efetuada com sucesso"
                 };
             }
 

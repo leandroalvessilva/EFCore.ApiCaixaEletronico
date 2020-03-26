@@ -132,5 +132,35 @@ namespace ApiCaixaEletronico.DAO.DAO
             }
             return true;
         }
+        
+        public bool Login(long cpf, int senha)
+        {
+            var contaUsario = _commonDbContext.Contas.Where(x => x.CpfCliente == cpf && x.SenhaConta == senha).FirstOrDefault();
+
+            if (contaUsario == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public ContaDTO ListarUsuario(long cpf, int senha)
+        {
+            ContaDTO conta = new ContaDTO();
+
+            if (this.Login(cpf, senha))
+            {
+                var contaUsario = _commonDbContext.Contas.Where(x => x.CpfCliente == cpf && x.SenhaConta == senha).FirstOrDefault();
+
+                conta.AgenciaContaCli = contaUsario.Agencia;
+                conta.BancoContaCli = contaUsario.Banco;
+                conta.CpfCli = contaUsario.CpfCliente;
+                conta.NumeroContaCli = contaUsario.NumeroContaCli;
+                conta.SaldoConta = contaUsario.SaldoConta;
+
+                return conta;
+            }
+            return conta;
+        }
     }
 }

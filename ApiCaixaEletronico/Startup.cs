@@ -37,8 +37,9 @@ namespace ApiCaixaEletronico
             });
 
             services.AddTransient<IOperacoesBancariasDAO, OperacoesBancariasDAO>();
-            services.AddTransient<ICaixaEletronicoDAO, CaixaEletronicoDAO>();
             services.AddTransient<IOperacoesBancariasService, OperacoesBancariasService>();
+            services.AddTransient<ICaixaEletronicoDAO, CaixaEletronicoDAO>();
+            services.AddTransient<ICaixaEletronicoService, CaixaEletronicoService>();
 
             services.AddControllers();
 
