@@ -18,7 +18,7 @@ namespace ApiCaixaEletronico.Tests.Services
         private OperacoesBancariasService service;
         private Mock<IOperacoesBancariasDAO> mockOperacoesDao;
         private Mock<ICaixaEletronicoDAO> mockCaixaEletronicoDao;
-        private TestesUteis testeUteis;
+        private TestesUteis testesUteis;
 
         [TestInitialize]
         public void Initialize()
@@ -26,22 +26,22 @@ namespace ApiCaixaEletronico.Tests.Services
             mockOperacoesDao = new Mock<IOperacoesBancariasDAO>();
             mockCaixaEletronicoDao = new Mock<ICaixaEletronicoDAO>();
             service = new OperacoesBancariasService(mockOperacoesDao.Object);
-            testeUteis = new TestesUteis();
+            testesUteis = new TestesUteis();
         }
 
         [TestMethod]
         public void DeveTestar_Saldo()
         {
-            var options = testeUteis.CriarDataBaseTeste("SaldoTeste");
+            var options = testesUteis.CriarDataBaseTeste("SaldoTeste");
             ContaDTO conta = new ContaDTO();
 
             using (var context = new CommonDbContext(options))
             {
-                context.Contas.Add(testeUteis.ListarContas());
+                context.Contas.Add(testesUteis.ListarContas());
 
                 context.SaveChanges();
 
-                var chamada = service.Saldo(conta);
+                var chamada = service.Saldo(testesUteis.Contas().BancoContaCli, testesUteis.Contas().AgenciaContaCli, testesUteis.Contas().NumeroContaCli, testesUteis.Contas().CpfCli);
 
                 Assert.IsNotNull(chamada);
             }
@@ -52,15 +52,15 @@ namespace ApiCaixaEletronico.Tests.Services
         {
             ContaDTO conta = new ContaDTO();
 
-            mockOperacoesDao.Setup(x => x.Saldo(It.IsAny<ContaDTO>()))
+            mockOperacoesDao.Setup(x => x.Saldo(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<long>()))
                   .Throws(new Exception("erro", new Exception("innter erro")));
-            service.Saldo(conta);
+            service.Saldo(testesUteis.Contas().BancoContaCli, testesUteis.Contas().AgenciaContaCli, testesUteis.Contas().NumeroContaCli, testesUteis.Contas().CpfCli);
         }
 
         [TestMethod]
         public void DeveTestar_Sacar()
         {
-            var options = testeUteis.CriarDataBaseTeste("SacarTeste");
+            var options = testesUteis.CriarDataBaseTeste("SacarTeste");
             
             ContaDTO conta = new ContaDTO();
 
@@ -68,8 +68,8 @@ namespace ApiCaixaEletronico.Tests.Services
 
             using (var context = new CommonDbContext(options))
             {
-                context.Contas.Add(testeUteis.ListarContas());
-                context.Caixas.Add(testeUteis.ListarCaixas());
+                context.Contas.Add(testesUteis.ListarContas());
+                context.Caixas.Add(testesUteis.ListarCaixas());
 
                 context.SaveChanges();
 
@@ -93,7 +93,7 @@ namespace ApiCaixaEletronico.Tests.Services
         [TestMethod]
         public void DeveTestar_Depositar()
         {
-            var options = testeUteis.CriarDataBaseTeste("DepositarTeste");
+            var options = testesUteis.CriarDataBaseTeste("DepositarTeste");
 
             ContaDTO conta = new ContaDTO();
 
@@ -101,7 +101,7 @@ namespace ApiCaixaEletronico.Tests.Services
 
             using (var context = new CommonDbContext(options))
             {
-                context.Contas.Add(testeUteis.ListarContas());
+                context.Contas.Add(testesUteis.ListarContas());
 
                 context.SaveChanges();
 
@@ -125,21 +125,19 @@ namespace ApiCaixaEletronico.Tests.Services
         [TestMethod]
         public void DeveTestar_Transferir()
         {
-            var options = testeUteis.CriarDataBaseTeste("TransferirTeste");
+            var options = testesUteis.CriarDataBaseTeste("TransferirTeste");
 
-            ContaDTO conta = new ContaDTO();
-            ContaDTO contaDestino = new ContaDTO();
-
+            ContasTransferenciaDTO contasTransferir = new ContasTransferenciaDTO();
 
             decimal valorSacar = 200;
 
             using (var context = new CommonDbContext(options))
             {
-                context.Contas.Add(testeUteis.ListarContas());
+                context.Contas.Add(testesUteis.ListarContas());
 
                 context.SaveChanges();
 
-                var chamada = service.Transferir(conta, contaDestino, valorSacar);
+                var chamada = service.Transferir(contasTransferir, valorSacar);
 
                 Assert.IsNotNull(chamada);
             }
@@ -148,14 +146,13 @@ namespace ApiCaixaEletronico.Tests.Services
         [TestMethod]
         public void DeveTestar_Transferir_Exception()
         {
-            ContaDTO conta = new ContaDTO();
-            ContaDTO contaDestino = new ContaDTO();
+            ContasTransferenciaDTO contasTransferir = new ContasTransferenciaDTO();
 
             decimal valorDepositar = 200;
 
-            mockOperacoesDao.Setup(x => x.Transferir(It.IsAny<ContaDTO>(), It.IsAny<ContaDTO>(), It.IsAny<decimal>()))
+            mockOperacoesDao.Setup(x => x.Transferir(It.IsAny<ContasTransferenciaDTO>(), It.IsAny<decimal>()))
                   .Throws(new Exception("erro", new Exception("innter erro")));
-            service.Transferir(conta, contaDestino, valorDepositar);
+            service.Transferir(contasTransferir, valorDepositar);
         }
     }
 }

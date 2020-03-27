@@ -31,7 +31,7 @@ namespace ApiCaixaEletronico.Tests.Controllers
         {
             decimal saldo = 1000;
 
-            mockService.Setup(x => x.Saldo(It.IsAny<ContaDTO>()))
+            mockService.Setup(x => x.Saldo(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<long>()))
                 .Returns(new Retorno()
                 {
                     Codigo = 200,
@@ -39,7 +39,7 @@ namespace ApiCaixaEletronico.Tests.Controllers
                     Mensagem = "Consultado efetuada com sucesso"
                 });
 
-            IActionResult result = controller.Saldo(testesUteis.Contas());
+            IActionResult result = controller.Saldo(testesUteis.Contas().BancoContaCli, testesUteis.Contas().AgenciaContaCli, testesUteis.Contas().NumeroContaCli, testesUteis.Contas().CpfCli);
             var okResult = result as OkObjectResult;
 
             Retorno contentResult = (Retorno)okResult.Value;
@@ -53,10 +53,10 @@ namespace ApiCaixaEletronico.Tests.Controllers
         [ExpectedException(typeof(NullReferenceException))]
         public void OperacoesBancariasController_SaldoExceptionTest()
         {
-            mockService.Setup(x => x.Saldo(It.IsAny<ContaDTO>()))
+            mockService.Setup(x => x.Saldo(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<long>()))
                 .Throws(new Exception("Internal server error"));
 
-            IActionResult result = controller.Saldo(testesUteis.Contas());
+            IActionResult result = controller.Saldo(testesUteis.Contas().BancoContaCli, testesUteis.Contas().AgenciaContaCli, testesUteis.Contas().NumeroContaCli, testesUteis.Contas().CpfCli);
             var okResult = result as OkObjectResult;
 
             Retorno contentResult = (Retorno)okResult.Value;
@@ -158,11 +158,10 @@ namespace ApiCaixaEletronico.Tests.Controllers
         [TestMethod]
         public void OperacoesBancariasController_TransferirTest()
         {
-            ContaDTO conta = new ContaDTO();
-            ContaDTO contaDestino = new ContaDTO();
+            ContasTransferenciaDTO contasTransferencia = new ContasTransferenciaDTO();
             decimal valorTransferir = 1000;
 
-            mockService.Setup(x => x.Transferir(It.IsAny<ContaDTO>(), It.IsAny<ContaDTO>(), It.IsAny<decimal>()))
+            mockService.Setup(x => x.Transferir(It.IsAny<ContasTransferenciaDTO>(), It.IsAny<decimal>()))
                 .Returns(new Retorno()
                 {
                     Codigo = 200,
@@ -170,7 +169,7 @@ namespace ApiCaixaEletronico.Tests.Controllers
                     Mensagem = "Depósito realizado com sucesso."
                 });
 
-            IActionResult result = controller.Transferir(conta, contaDestino, valorTransferir);
+            IActionResult result = controller.Transferir(contasTransferencia, valorTransferir);
             var okResult = result as OkObjectResult;
 
             Retorno contentResult = (Retorno)okResult.Value;
@@ -184,14 +183,13 @@ namespace ApiCaixaEletronico.Tests.Controllers
         [ExpectedException(typeof(NullReferenceException))]
         public void OperacoesBancariasController_TransferirExceptionTest()
         {
-            ContaDTO conta = new ContaDTO();
-            ContaDTO contaDestino = new ContaDTO();
+            ContasTransferenciaDTO contasTransferencia = new ContasTransferenciaDTO();
             decimal valorTransferir = 1000;
 
-            mockService.Setup(x => x.Transferir(It.IsAny<ContaDTO>(), It.IsAny<ContaDTO>(), It.IsAny<decimal>()))
+            mockService.Setup(x => x.Transferir(It.IsAny<ContasTransferenciaDTO>(), It.IsAny<decimal>()))
                 .Throws(new Exception("Internal server error"));
 
-            IActionResult result = controller.Transferir(conta, contaDestino, valorTransferir);
+            IActionResult result = controller.Transferir(contasTransferencia, valorTransferir);
             var okResult = result as OkObjectResult;
 
             Retorno contentResult = (Retorno)okResult.Value;

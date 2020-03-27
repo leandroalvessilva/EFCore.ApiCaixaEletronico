@@ -5,12 +5,12 @@ namespace ApiCaixaEletronico.DAO.DAO
 {
     public interface IOperacoesBancariasDAO
     {
-        decimal Saldo(ContaDTO conta);
+        decimal Saldo(int banco, int agencia, int numeroConta, long cpf);
 
         OperacaoDTO Sacar(ContaDTO conta, bool isTransferencia, decimal valorSacar);
 
         bool Depositar(ContaDTO conta, bool outraConta, decimal ValorDepositar);
 
-        bool Transferir(ContaDTO conta, ContaDTO contaDestino, decimal ValorTransferir);
+        bool Transferir(ContasTransferenciaDTO contasTransferencia, decimal ValorTransferir);
     }
 }

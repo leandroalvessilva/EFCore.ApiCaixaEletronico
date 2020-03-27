@@ -1,5 +1,6 @@
 ﻿using ApiCaixaEletronico.DTO;
 using ApiCaixaEletronico.Service.Interface;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 namespace ApiCaixaEletronico.Controllers
 {
     [Route("api/[controller]")]
+    [EnableCors("AllowSpecificOrigin")]
     public class CaixaEletronicoController : Controller
     {
         private readonly ICaixaEletronicoService _caixaEletronicoService;

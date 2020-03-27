@@ -1,12 +1,14 @@
 ﻿using ApiCaixaEletronico.DTO;
 using ApiCaixaEletronico.DTO.DTO;
 using ApiCaixaEletronico.Service.Interface;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System;
 
 namespace ApiCaixaEletronico.Controllers
 {
     [Route("api/[controller]")]
+    [EnableCors("AllowSpecificOrigin")]
     public class OperacoesBancariasController : Controller
     {
         private readonly IOperacoesBancariasService _operacoesService;
@@ -15,14 +17,14 @@ namespace ApiCaixaEletronico.Controllers
         {
             this._operacoesService = operacoesService;
         }
-
+               
         [HttpGet]
         [Route("Saldo")]
-        public ActionResult Saldo(ContaDTO conta)
+        public ActionResult Saldo(int banco, int agencia, int numeroConta, long cpf)
         {
             try
             {
-                var saldo = _operacoesService.Saldo(conta);
+                var saldo = _operacoesService.Saldo(banco,agencia,numeroConta,cpf);
 
                 return Ok(saldo);
             }
@@ -36,7 +38,7 @@ namespace ApiCaixaEletronico.Controllers
                 });
             }
         }
-              
+
         [HttpPost]
         [Route("Sacar")]
         public ActionResult Sacar(ContaDTO conta, bool isTransferencia, decimal ValorSacar)
@@ -79,11 +81,11 @@ namespace ApiCaixaEletronico.Controllers
 
         [HttpPost]
         [Route("Transferir")]
-        public ActionResult Transferir(ContaDTO conta, ContaDTO contaDestino, decimal ValorTransferir)
+        public ActionResult Transferir(ContasTransferenciaDTO contasTransferencia, decimal ValorTransferir)
         {
             try
             {
-                var result = _operacoesService.Transferir(conta, contaDestino, ValorTransferir);
+                var result = _operacoesService.Transferir(contasTransferencia, ValorTransferir);
 
                 return Ok(result);
             }

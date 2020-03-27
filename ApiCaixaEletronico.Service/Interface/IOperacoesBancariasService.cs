@@ -5,12 +5,12 @@ namespace ApiCaixaEletronico.Service.Interface
 {
     public interface IOperacoesBancariasService
     {
-        Retorno Saldo(ContaDTO conta);
-        
+        Retorno Saldo(int banco, int agencia, int numeroConta, long cpf);
+
         Retorno Sacar(ContaDTO conta, bool isTransferencia, decimal valorSacar);
                
         Retorno Depositar(ContaDTO conta, bool outraConta, decimal ValorDepositar);
 
-        Retorno Transferir(ContaDTO conta, ContaDTO contaDestino, decimal ValorTransferir);
+        Retorno Transferir(ContasTransferenciaDTO contasTransferencia, decimal ValorTransferir);
     }
 }

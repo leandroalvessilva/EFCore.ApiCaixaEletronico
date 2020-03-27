@@ -15,20 +15,20 @@ namespace ApiCaixaEletronico.DAO.DAO
             this._caixaEletronicoDAO = caixaEletronicoDAO;
         }
 
-        public decimal Saldo(ContaDTO conta)
+        public decimal Saldo(int banco, int agencia, int numeroConta, long cpf)
         {
-            decimal saldo = _commonDbContext.Contas.Where(x => x.Banco == conta.BancoContaCli && x.Agencia == conta.AgenciaContaCli && x.NumeroContaCli == conta.NumeroContaCli).Select(x => x.SaldoConta).FirstOrDefault();
+            decimal saldo = _commonDbContext.Contas.Where(x => x.Banco == banco && x.Agencia == agencia && x.NumeroContaCli == numeroConta && x.CpfCliente == cpf).Select(x => x.SaldoConta).FirstOrDefault();
 
             return saldo;
         }
 
         public OperacaoDTO Sacar(ContaDTO conta, bool isTransferencia, decimal valorSacar)
         {
+            OperacaoDTO operacao = new OperacaoDTO();
+
             var caixaEletronico = _commonDbContext.Caixas.FirstOrDefault();
 
-            var contaUsuario = _commonDbContext.Contas.Where(x => x.Banco == conta.BancoContaCli && x.Agencia == conta.AgenciaContaCli && x.NumeroContaCli == conta.NumeroContaCli).FirstOrDefault();
-
-            OperacaoDTO operacao = new OperacaoDTO();
+            var contaUsuario = _commonDbContext.Contas.Where(x => x.Banco == conta.BancoContaCli && x.Agencia == conta.AgenciaContaCli && x.NumeroContaCli == conta.NumeroContaCli && x.CpfCliente == conta.CpfCli).FirstOrDefault();
 
             if (_caixaEletronicoDAO.ValidarSaque(valorSacar, contaUsuario, caixaEletronico))
             {
@@ -63,7 +63,7 @@ namespace ApiCaixaEletronico.DAO.DAO
                     _commonDbContext.Update(caixaEletronico);
                     _commonDbContext.SaveChanges();
 
-                    operacao.NotasUtilizadas = new int[4] { notasParaSaque[0], notasParaSaque[1], notasParaSaque[2], notasParaSaque[3] };
+                    operacao.NotasUtilizadas = new string[4] { "R$ 100: " + notasParaSaque[0], "R$ 50: " + notasParaSaque[1], "R$ 20: " + notasParaSaque[2], "R$ 10: " + notasParaSaque[3] };
                     operacao.ValorSacado = valorSacar;
                     operacao.Conta = conta;
                     operacao.Realizada = true;
@@ -78,7 +78,7 @@ namespace ApiCaixaEletronico.DAO.DAO
         {
             if (outraConta)
             {
-                var contaDestino = _commonDbContext.Contas.Where(x => x.Banco == conta.BancoContaCli && x.Agencia == conta.AgenciaContaCli && x.NumeroContaCli == conta.NumeroContaCli).FirstOrDefault();
+                var contaDestino = _commonDbContext.Contas.Where(x => x.Banco == conta.BancoContaCli && x.Agencia == conta.AgenciaContaCli && x.NumeroContaCli == conta.NumeroContaCli && x.CpfCliente == conta.CpfCli).FirstOrDefault();
 
                 if (contaDestino == null)
                 {
@@ -95,7 +95,7 @@ namespace ApiCaixaEletronico.DAO.DAO
             }
             else
             {
-                var contaUsario = _commonDbContext.Contas.Where(x => x.Banco == conta.BancoContaCli && x.Agencia == conta.AgenciaContaCli && x.NumeroContaCli == conta.NumeroContaCli).FirstOrDefault();
+                var contaUsario = _commonDbContext.Contas.Where(x => x.Banco == conta.BancoContaCli && x.Agencia == conta.AgenciaContaCli && x.NumeroContaCli == conta.NumeroContaCli && x.CpfCliente == conta.CpfCli).FirstOrDefault();
 
                 contaUsario.SaldoConta += ValorDepositar;
 
@@ -108,15 +108,31 @@ namespace ApiCaixaEletronico.DAO.DAO
 
         }
 
-        public bool Transferir(ContaDTO conta, ContaDTO contaDestino, decimal ValorTransferir)
+        public bool Transferir(ContasTransferenciaDTO contasTransferencia, decimal ValorTransferir)
         {
-            if (_caixaEletronicoDAO.ValidarInformacoes(conta, contaDestino))
+            if (_caixaEletronicoDAO.ValidarInformacoes(contasTransferencia))
             {
-                this.Sacar(conta, true, ValorTransferir);
+                ContaDTO contaUsuario = new ContaDTO()
+                {
+                    AgenciaContaCli = contasTransferencia.Usuario_Agencia,
+                    BancoContaCli = contasTransferencia.Usuario_Banco,
+                    CpfCli = contasTransferencia.Usuario_Cpf,
+                    NumeroContaCli = contasTransferencia.Usuario_NumeroConta
+                };
+
+                ContaDTO contaDestino = new ContaDTO()
+                {
+                    AgenciaContaCli = contasTransferencia.Destino_Agencia,
+                    BancoContaCli = contasTransferencia.Destino_Banco,
+                    CpfCli = contasTransferencia.Destino_Cpf,
+                    NumeroContaCli = contasTransferencia.Destino_NumeroConta
+                };
+
+                this.Sacar(contaUsuario, true, ValorTransferir);
                 this.Depositar(contaDestino, true, ValorTransferir);
                 return true;
             }
             return false;
-        }       
+        }
     }
 }

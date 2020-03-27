@@ -58,5 +58,22 @@ namespace ApiCaixaEletronico.Tests
 
             return contas;
         }
+
+        public ContasTransferenciaDTO ContasTransferencia()
+        {
+            ContasTransferenciaDTO contasTransferencia = new ContasTransferenciaDTO()
+            {
+                Usuario_Agencia = 2020,
+                Usuario_Banco = 123,
+                Usuario_Cpf = 12345678900,
+                Usuario_NumeroConta = 20201231,
+                Destino_Agencia = 2021,
+                Destino_Banco = 124,
+                Destino_Cpf = 12345678901,
+                Destino_NumeroConta = 20211241
+            };
+
+            return contasTransferencia;
+        }
     }
 }

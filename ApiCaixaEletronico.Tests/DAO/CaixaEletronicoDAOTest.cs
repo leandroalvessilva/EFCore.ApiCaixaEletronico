@@ -81,7 +81,7 @@ namespace ApiCaixaEletronico.Tests.DAO
                 caixaEletronicoDao = new CaixaEletronicoDAO(context);
 
                 var result = caixaEletronicoDao.ValidarSaque(valorSacar, testesUteis.ListarContas(), testesUteis.ListarCaixas());
-               
+
                 Assert.IsNotNull(result);
             }
         }
@@ -99,7 +99,7 @@ namespace ApiCaixaEletronico.Tests.DAO
 
                 caixaEletronicoDao = new CaixaEletronicoDAO(context);
 
-                var result = caixaEletronicoDao.ValidarInformacoes(testesUteis.Contas(), testesUteis.Contas());
+                var result = caixaEletronicoDao.ValidarInformacoes(testesUteis.ContasTransferencia());
 
                 Assert.IsNotNull(result);
             }

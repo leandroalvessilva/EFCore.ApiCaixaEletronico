@@ -71,7 +71,7 @@ namespace ApiCaixaEletronico.Service.Service
                 return new Retorno()
                 {
                     Codigo = 500,
-                    Mensagem = "Erro ao realizar consulta, verifique as informações."
+                    Mensagem = "Erro ao listar usuário, verifique as informações."
                 };
             }
 
@@ -80,7 +80,7 @@ namespace ApiCaixaEletronico.Service.Service
                 return new Retorno()
                 {
                     Codigo = 500,
-                    Mensagem = "Erro ao realizar consulta, verifique as informações: " + ex.Message
+                    Mensagem = "Erro ao listar usuário, verifique as informações: " + ex.Message
                 };
             }
         }

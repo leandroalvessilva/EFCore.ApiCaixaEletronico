@@ -16,11 +16,11 @@ namespace ApiCaixaEletronico.Service.Service
             this._operacoesDao = operacoesDao;
         }
 
-        public Retorno Saldo(ContaDTO conta)
+        public Retorno Saldo(int banco, int agencia, int numeroConta, long cpf)
         {
             try
             {
-                var result = _operacoesDao.Saldo(conta);
+                var result = _operacoesDao.Saldo(banco,agencia,numeroConta,cpf);
 
                 return new Retorno()
                 {
@@ -46,20 +46,19 @@ namespace ApiCaixaEletronico.Service.Service
             {
                 var result = _operacoesDao.Sacar(conta, isTransferencia, valorSacar);
 
-                if (result.Realizada == false)
+                if (result.Realizada)
                 {
                     return new Retorno()
                     {
-                        Codigo = 500,
-                        Mensagem = "Erro ao realizar operação, verifique o saldo e o valor digitado para saque."
+                        Codigo = 200,
+                        Mensagem = "Saque realizado com sucesso.",
+                        Data = JsonConvert.SerializeObject(result)
                     };
                 }
-
                 return new Retorno()
                 {
-                    Codigo = 200,
-                    Mensagem = "Saque realizado com sucesso.",
-                    Data = JsonConvert.SerializeObject(result)
+                    Codigo = 500,
+                    Mensagem = "Erro ao realizar operação, verifique o saldo e o valor digitado para saque."
                 };
             }
             catch (Exception ex)
@@ -78,20 +77,20 @@ namespace ApiCaixaEletronico.Service.Service
             {
                 var result = _operacoesDao.Depositar(conta, outraConta, ValorDepositar);
 
-                if (result == false)
+                if (result)
                 {
                     return new Retorno()
                     {
-                        Codigo = 500,
-                        Mensagem = "Depósito não realizado, verique as informações da conta."
+                        Codigo = 200,
+                        Mensagem = "Depósito realizado com sucesso."
                     };
                 }
                 else
                 {
                     return new Retorno()
                     {
-                        Codigo = 200,
-                        Mensagem = "Depósito realizado com sucesso."
+                        Codigo = 500,
+                        Mensagem = "Depósito não realizado, verique as informações da conta."
                     };
                 }
             }
@@ -106,26 +105,26 @@ namespace ApiCaixaEletronico.Service.Service
             }
         }
 
-        public Retorno Transferir(ContaDTO conta, ContaDTO contaDestino, decimal ValorTransferir)
+        public Retorno Transferir(ContasTransferenciaDTO contasTransferencia, decimal ValorTransferir)
         {
             try
             {
-                var result = _operacoesDao.Transferir(conta, contaDestino, ValorTransferir);
+                var result = _operacoesDao.Transferir(contasTransferencia, ValorTransferir);
 
-                if (result == false)
+                if (result)
                 {
                     return new Retorno()
                     {
-                        Codigo = 500,
-                        Mensagem = "Erro ao realizar transferência, verifique as informações."
+                        Codigo = 200,
+                        Mensagem = "Transferência realizada com sucesso."
                     };
                 }
                 else
                 {
                     return new Retorno()
                     {
-                        Codigo = 200,
-                        Mensagem = "Transferência realizada com Sucesso."
+                        Codigo = 500,
+                        Mensagem = "Erro ao realizar transferência, verifique as informações."
                     };
                 }
             }

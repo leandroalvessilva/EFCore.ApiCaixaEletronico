@@ -40,7 +40,7 @@ namespace ApiCaixaEletronico.Tests.DAO
 
                 OperacoesBancariasDao = new OperacoesBancariasDAO(context, mockCaixaEletronico.Object);
 
-                var result = OperacoesBancariasDao.Saldo(testesUteis.Contas());
+                var result = OperacoesBancariasDao.Saldo(testesUteis.Contas().BancoContaCli, testesUteis.Contas().AgenciaContaCli, testesUteis.Contas().NumeroContaCli, testesUteis.Contas().CpfCli);
 
                 Assert.IsNotNull(result);
             }
@@ -101,7 +101,7 @@ namespace ApiCaixaEletronico.Tests.DAO
 
                 OperacoesBancariasDao = new OperacoesBancariasDAO(context, mockCaixaEletronico.Object);
 
-                var result = OperacoesBancariasDao.Transferir(testesUteis.Contas(), testesUteis.Contas(), valorTransferir);
+                var result = OperacoesBancariasDao.Transferir(testesUteis.ContasTransferencia(), valorTransferir);
 
                 Assert.IsNotNull(result);
             }

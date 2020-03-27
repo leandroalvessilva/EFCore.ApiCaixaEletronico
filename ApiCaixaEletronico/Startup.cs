@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using ApiCaixaEletronico.DAO;
 using ApiCaixaEletronico.DAO.DAO;
 using ApiCaixaEletronico.DAO.Interface;
@@ -9,20 +5,21 @@ using ApiCaixaEletronico.Service.Interface;
 using ApiCaixaEletronico.Service.Service;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace ApiCaixaEletronico
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(env.ContentRootPath)
+                .AddJsonFile("appsetting.json", optional: true, reloadOnChange: true);
+
             Configuration = configuration;
         }
 
@@ -31,6 +28,15 @@ namespace ApiCaixaEletronico
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options => {
+                options.AddPolicy("AllowSpecificOrigin",
+                    builder => builder
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowAnyOrigin()
+                    );
+            });
+
             services.AddDbContext<CommonDbContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("Defaultconnection"));
@@ -42,6 +48,7 @@ namespace ApiCaixaEletronico
             services.AddTransient<ICaixaEletronicoService, CaixaEletronicoService>();
 
             services.AddControllers();
+
 
         }
 
@@ -58,6 +65,8 @@ namespace ApiCaixaEletronico
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseCors("AllowSpecificOrigin");
 
             app.UseEndpoints(endpoints =>
             {

@@ -34,7 +34,7 @@ namespace ApiCaixaEletronico.DAO.DAO
             {
                 if (notasDisponives[i] < notasNecessarias[i])
                 {
-                    int adicionarNota = 0;
+                    int adicionarNota;
 
                     notas[i] = notasDisponives[i];
 
@@ -78,7 +78,7 @@ namespace ApiCaixaEletronico.DAO.DAO
 
             for (int i = 0; i <= 4; i++)
             {
-                decimal result = 0;
+                decimal result;
 
                 if (ValorSacar == 0)
                 {
@@ -120,11 +120,11 @@ namespace ApiCaixaEletronico.DAO.DAO
             return true;
         }
 
-        public bool ValidarInformacoes(ContaDTO conta, ContaDTO contaDestino)
+        public bool ValidarInformacoes(ContasTransferenciaDTO contasTransferencia)
         {
-            var contaUsario = _commonDbContext.Contas.Where(x => x.Banco == conta.BancoContaCli && x.Agencia == conta.AgenciaContaCli && x.NumeroContaCli == conta.NumeroContaCli).FirstOrDefault();
+            var contaUsario = _commonDbContext.Contas.Where(x => x.Banco == contasTransferencia.Usuario_Banco && x.Agencia == contasTransferencia.Usuario_Agencia && x.NumeroContaCli == contasTransferencia.Usuario_NumeroConta && x.CpfCliente == contasTransferencia.Usuario_Cpf).FirstOrDefault();
 
-            var contaDestinataria = _commonDbContext.Contas.Where(x => x.Banco == contaDestino.BancoContaCli && x.Agencia == contaDestino.AgenciaContaCli && x.NumeroContaCli == contaDestino.NumeroContaCli).FirstOrDefault();
+            var contaDestinataria = _commonDbContext.Contas.Where(x => x.Banco == contasTransferencia.Destino_Banco && x.Agencia == contasTransferencia.Destino_Agencia && x.NumeroContaCli == contasTransferencia.Destino_NumeroConta && x.CpfCliente == contasTransferencia.Destino_Cpf).FirstOrDefault();
 
             if (contaUsario == null || contaDestinataria == null)
             {
