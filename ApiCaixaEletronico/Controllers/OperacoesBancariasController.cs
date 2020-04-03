@@ -7,6 +7,7 @@ using System;
 
 namespace ApiCaixaEletronico.Controllers
 {
+    [Produces("application/json")]
     [Route("api/[controller]")]
     [EnableCors("AllowSpecificOrigin")]
     public class OperacoesBancariasController : Controller
@@ -17,14 +18,14 @@ namespace ApiCaixaEletronico.Controllers
         {
             this._operacoesService = operacoesService;
         }
-               
+
         [HttpGet]
         [Route("Saldo")]
         public ActionResult Saldo(int banco, int agencia, int numeroConta, long cpf)
         {
             try
             {
-                var saldo = _operacoesService.Saldo(banco,agencia,numeroConta,cpf);
+                var saldo = _operacoesService.Saldo(banco, agencia, numeroConta, cpf);
 
                 return Ok(saldo);
             }
@@ -41,11 +42,11 @@ namespace ApiCaixaEletronico.Controllers
 
         [HttpPost]
         [Route("Sacar")]
-        public ActionResult Sacar(ContaDTO conta, bool isTransferencia, decimal ValorSacar)
+        public ActionResult Sacar([FromBody]ContaDTO conta, decimal valorSacar)
             {
             try
             {
-                var result = _operacoesService.Sacar(conta, isTransferencia, ValorSacar);
+                var result = _operacoesService.Sacar(conta, valorSacar);
 
                 return Ok(result);
             }
@@ -61,31 +62,11 @@ namespace ApiCaixaEletronico.Controllers
 
         [HttpPost]
         [Route("Depositar")]
-        public ActionResult Depositar(ContaDTO conta, bool outraConta, decimal ValorDepositar)
+        public ActionResult Depositar([FromBody]ContaDTO conta, decimal valorDepositar, string notasDepositadas)
         {
             try
             {
-                var result = _operacoesService.Depositar(conta, outraConta, ValorDepositar);
-
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new Retorno()
-                {
-                    Codigo = 500,
-                    Mensagem = ex.Message
-                });
-            }
-        }
-
-        [HttpPost]
-        [Route("Transferir")]
-        public ActionResult Transferir(ContasTransferenciaDTO contasTransferencia, decimal ValorTransferir)
-        {
-            try
-            {
-                var result = _operacoesService.Transferir(contasTransferencia, ValorTransferir);
+                var result = _operacoesService.Depositar(conta, valorDepositar, notasDepositadas);
 
                 return Ok(result);
             }

@@ -14,13 +14,13 @@ namespace ApiCaixaEletronico.Tests.DTO
             var obj = new OperacaoDTO()
             {
                 Conta = testesUteis.Contas(),
-                NotasUtilizadas = new string[4] { "1", "1", "1", "1" },
+                NotasUtilizadas = new int[4] {1, 1, 1, 1},
                 Realizada = true,
                 ValorSacado = 500
             };
 
             Assert.IsInstanceOfType(obj.Conta, typeof(ContaDTO));
-            Assert.IsInstanceOfType(obj.NotasUtilizadas, typeof(string[]));
+            Assert.IsInstanceOfType(obj.NotasUtilizadas, typeof(int[]));
             Assert.AreEqual(true, obj.Realizada);
             Assert.AreEqual(500, obj.ValorSacado);
         }

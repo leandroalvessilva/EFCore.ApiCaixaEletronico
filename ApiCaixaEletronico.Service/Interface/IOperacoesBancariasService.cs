@@ -7,10 +7,8 @@ namespace ApiCaixaEletronico.Service.Interface
     {
         Retorno Saldo(int banco, int agencia, int numeroConta, long cpf);
 
-        Retorno Sacar(ContaDTO conta, bool isTransferencia, decimal valorSacar);
-               
-        Retorno Depositar(ContaDTO conta, bool outraConta, decimal ValorDepositar);
+        Retorno Sacar(ContaDTO conta, decimal valorSacar);
 
-        Retorno Transferir(ContasTransferenciaDTO contasTransferencia, decimal ValorTransferir);
+        Retorno Depositar(ContaDTO conta, decimal valorDepositar, string notasDepositadas);
     }
 }

@@ -1,8 +1,5 @@
 ﻿using ApiCaixaEletronico.DTO.Context;
 using ApiCaixaEletronico.DTO.DTO;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ApiCaixaEletronico.DAO.Interface
 {
@@ -16,10 +13,12 @@ namespace ApiCaixaEletronico.DAO.Interface
 
         bool ValidarSaque(decimal valorSacar, ContaContext contaUsuario, CaixaEletronicoContext caixaEletronico);
 
+        bool ValidarDeposito(ContaContext conta, decimal valorDepositar, string[] notasDepositadas);
+
         bool ValidarInformacoes(ContasTransferenciaDTO contasTransferencia);
 
         bool Login(long cpf, int senha);
 
-        ContaDTO ListarUsuario(long cpf, int senha);
+        ContaDTO ListarUsuario(long cpf);
     }
 }

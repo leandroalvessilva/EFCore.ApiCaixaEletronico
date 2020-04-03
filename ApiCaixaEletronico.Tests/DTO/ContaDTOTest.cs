@@ -18,7 +18,8 @@ namespace ApiCaixaEletronico.Tests.DTO
                 BancoContaCli = 341,
                 CpfCli = 123456787900,
                 NumeroContaCli = 20203411,
-                SaldoConta = 1000
+                SaldoConta = 1000,
+                Nome_Cliente = "Teste"
             };
 
             Assert.AreEqual(2020, obj.AgenciaContaCli);
@@ -26,6 +27,7 @@ namespace ApiCaixaEletronico.Tests.DTO
             Assert.AreEqual(123456787900, obj.CpfCli);
             Assert.AreEqual(20203411, obj.NumeroContaCli);
             Assert.AreEqual(1000, obj.SaldoConta);
+            Assert.AreEqual("Teste", obj.Nome_Cliente);
         }
     }
 }

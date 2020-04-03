@@ -1,5 +1,4 @@
 ﻿using ApiCaixaEletronico.DTO.DTO;
-using System;
 
 namespace ApiCaixaEletronico.DAO.DAO
 {
@@ -7,10 +6,8 @@ namespace ApiCaixaEletronico.DAO.DAO
     {
         decimal Saldo(int banco, int agencia, int numeroConta, long cpf);
 
-        OperacaoDTO Sacar(ContaDTO conta, bool isTransferencia, decimal valorSacar);
+        OperacaoDTO Sacar(ContaDTO conta, decimal valorSacar);
 
-        bool Depositar(ContaDTO conta, bool outraConta, decimal ValorDepositar);
-
-        bool Transferir(ContasTransferenciaDTO contasTransferencia, decimal ValorTransferir);
+        bool Depositar(ContaDTO conta, decimal valorDepositar, string notasDepositadas);
     }
 }

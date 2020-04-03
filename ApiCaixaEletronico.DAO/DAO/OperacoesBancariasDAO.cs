@@ -1,5 +1,6 @@
 ﻿using ApiCaixaEletronico.DAO.Interface;
 using ApiCaixaEletronico.DTO.DTO;
+using System;
 using System.Linq;
 
 namespace ApiCaixaEletronico.DAO.DAO
@@ -22,7 +23,7 @@ namespace ApiCaixaEletronico.DAO.DAO
             return saldo;
         }
 
-        public OperacaoDTO Sacar(ContaDTO conta, bool isTransferencia, decimal valorSacar)
+        public OperacaoDTO Sacar(ContaDTO conta, decimal valorSacar)
         {
             OperacaoDTO operacao = new OperacaoDTO();
 
@@ -32,107 +33,58 @@ namespace ApiCaixaEletronico.DAO.DAO
 
             if (_caixaEletronicoDAO.ValidarSaque(valorSacar, contaUsuario, caixaEletronico))
             {
-                if (isTransferencia)
-                {
-                    contaUsuario.SaldoConta -= valorSacar;
-                    conta.SaldoConta = contaUsuario.SaldoConta;
+                var notasParaSaque = _caixaEletronicoDAO.RetornarNotasNecessarias(valorSacar);
 
-                    _commonDbContext.Update(contaUsuario);
-                    _commonDbContext.Update(caixaEletronico);
-                    _commonDbContext.SaveChanges();
+                caixaEletronico.NotasCem -= notasParaSaque[0];
+                caixaEletronico.NotasCinquenta -= notasParaSaque[1];
+                caixaEletronico.NotasVinte -= notasParaSaque[2];
+                caixaEletronico.NotasDez -= notasParaSaque[3];
+                caixaEletronico.Valor_Disponivel -= valorSacar;
 
-                    operacao.Conta = conta;
-                    operacao.Realizada = true;
+                contaUsuario.SaldoConta -= valorSacar;
+                conta.SaldoConta = contaUsuario.SaldoConta.ToString().Length < 12 ? Convert.ToDecimal(contaUsuario.SaldoConta.ToString().PadRight(12, '0')) : contaUsuario.SaldoConta;
 
-                    return operacao;
-                }
-                else
-                {
-                    var notasParaSaque = _caixaEletronicoDAO.RetornarNotasNecessarias(valorSacar);
+                _commonDbContext.Update(contaUsuario);
+                _commonDbContext.Update(caixaEletronico);
+                _commonDbContext.SaveChanges();
 
-                    caixaEletronico.NotasCem -= notasParaSaque[0];
-                    caixaEletronico.NotasCinquenta -= notasParaSaque[1];
-                    caixaEletronico.NotasVinte -= notasParaSaque[2];
-                    caixaEletronico.NotasCem -= notasParaSaque[3];
-                    caixaEletronico.Valor_Disponivel -= valorSacar;
+                operacao.NotasUtilizadas = new int[4] { notasParaSaque[0], notasParaSaque[1], notasParaSaque[2], notasParaSaque[3] };
+                operacao.ValorSacado = valorSacar;
+                operacao.Conta = conta;
+                operacao.Realizada = true;
 
-                    contaUsuario.SaldoConta -= valorSacar;
-                    conta.SaldoConta = contaUsuario.SaldoConta;
-
-                    _commonDbContext.Update(contaUsuario);
-                    _commonDbContext.Update(caixaEletronico);
-                    _commonDbContext.SaveChanges();
-
-                    operacao.NotasUtilizadas = new string[4] { "R$ 100: " + notasParaSaque[0], "R$ 50: " + notasParaSaque[1], "R$ 20: " + notasParaSaque[2], "R$ 10: " + notasParaSaque[3] };
-                    operacao.ValorSacado = valorSacar;
-                    operacao.Conta = conta;
-                    operacao.Realizada = true;
-
-                    return operacao;
-                }
+                return operacao;
             }
             return operacao;
         }
 
-        public bool Depositar(ContaDTO conta, bool outraConta, decimal ValorDepositar)
+        public bool Depositar(ContaDTO conta, decimal valorDepositar, string notasDepositadas)
         {
-            if (outraConta)
+            var contaUsario = _commonDbContext.Contas.Where(x => x.Banco == conta.BancoContaCli && x.Agencia == conta.AgenciaContaCli && x.NumeroContaCli == conta.NumeroContaCli && x.CpfCliente == conta.CpfCli).FirstOrDefault();
+
+            var caixaEletronico = _commonDbContext.Caixas.FirstOrDefault();
+
+            var notasDeposito = notasDepositadas.Split(',');
+
+            if (!_caixaEletronicoDAO.ValidarDeposito(contaUsario, valorDepositar, notasDeposito))
             {
-                var contaDestino = _commonDbContext.Contas.Where(x => x.Banco == conta.BancoContaCli && x.Agencia == conta.AgenciaContaCli && x.NumeroContaCli == conta.NumeroContaCli && x.CpfCliente == conta.CpfCli).FirstOrDefault();
-
-                if (contaDestino == null)
-                {
-                    return false;
-                }
-
-                contaDestino.SaldoConta += ValorDepositar;
-
-                _commonDbContext.Update(contaDestino);
-
-                _commonDbContext.SaveChanges();
-
-                return true;
-            }
-            else
-            {
-                var contaUsario = _commonDbContext.Contas.Where(x => x.Banco == conta.BancoContaCli && x.Agencia == conta.AgenciaContaCli && x.NumeroContaCli == conta.NumeroContaCli && x.CpfCliente == conta.CpfCli).FirstOrDefault();
-
-                contaUsario.SaldoConta += ValorDepositar;
-
-                _commonDbContext.Update(contaUsario);
-
-                _commonDbContext.SaveChanges();
-
-                return true;
+                return false;
             }
 
-        }
+            caixaEletronico.NotasCem += Convert.ToInt32(notasDeposito[0]);
+            caixaEletronico.NotasCinquenta += Convert.ToInt32(notasDeposito[1]);
+            caixaEletronico.NotasVinte += Convert.ToInt32(notasDeposito[2]);
+            caixaEletronico.NotasDez += Convert.ToInt32(notasDeposito[3]);
+            caixaEletronico.Valor_Disponivel += valorDepositar;
 
-        public bool Transferir(ContasTransferenciaDTO contasTransferencia, decimal ValorTransferir)
-        {
-            if (_caixaEletronicoDAO.ValidarInformacoes(contasTransferencia))
-            {
-                ContaDTO contaUsuario = new ContaDTO()
-                {
-                    AgenciaContaCli = contasTransferencia.Usuario_Agencia,
-                    BancoContaCli = contasTransferencia.Usuario_Banco,
-                    CpfCli = contasTransferencia.Usuario_Cpf,
-                    NumeroContaCli = contasTransferencia.Usuario_NumeroConta
-                };
+            contaUsario.SaldoConta += valorDepositar;
 
-                ContaDTO contaDestino = new ContaDTO()
-                {
-                    AgenciaContaCli = contasTransferencia.Destino_Agencia,
-                    BancoContaCli = contasTransferencia.Destino_Banco,
-                    CpfCli = contasTransferencia.Destino_Cpf,
-                    NumeroContaCli = contasTransferencia.Destino_NumeroConta
-                };
+            _commonDbContext.Update(contaUsario);
+            _commonDbContext.Update(caixaEletronico);
 
-                this.Sacar(contaUsuario, true, ValorTransferir);
-                this.Depositar(contaDestino, true, ValorTransferir);
-                return true;
-            }
-            return false;
+            _commonDbContext.SaveChanges();
+
+            return true;
         }
     }
 }

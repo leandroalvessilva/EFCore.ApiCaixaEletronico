@@ -3,12 +3,10 @@ using ApiCaixaEletronico.Service.Interface;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ApiCaixaEletronico.Controllers
 {
+    [Produces("application/json")]
     [Route("api/[controller]")]
     [EnableCors("AllowSpecificOrigin")]
     public class CaixaEletronicoController : Controller
@@ -43,11 +41,11 @@ namespace ApiCaixaEletronico.Controllers
 
         [HttpGet]
         [Route("ListarUsuario")]
-        public ActionResult ListarUsuario(long cpf, int senha)
+        public ActionResult ListarUsuario(long cpf)
         {
             try
             {
-                var result = _caixaEletronicoService.ListarUsuario(cpf, senha);
+                var result = _caixaEletronicoService.ListarUsuario(cpf);
 
                 return Ok(result);
             }

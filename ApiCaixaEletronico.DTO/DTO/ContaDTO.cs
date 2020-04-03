@@ -11,6 +11,8 @@
         public decimal SaldoConta { get; set; }
 
         public long CpfCli { get; set; }
+
+        public string Nome_Cliente { get; set; }
     }
 }
 

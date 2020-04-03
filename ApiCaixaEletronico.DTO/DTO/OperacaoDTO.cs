@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ApiCaixaEletronico.DTO.DTO
+﻿namespace ApiCaixaEletronico.DTO.DTO
 {
     public class OperacaoDTO
     {
         public ContaDTO Conta { get; set; }
 
-        public string[] NotasUtilizadas { get; set; }
+        public int[] NotasUtilizadas { get; set; }
 
         public decimal ValorSacado { get; set; }
 

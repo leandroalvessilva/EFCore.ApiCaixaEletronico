@@ -3,8 +3,6 @@ using ApiCaixaEletronico.DTO;
 using ApiCaixaEletronico.Service.Interface;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ApiCaixaEletronico.Service.Service
 {
@@ -52,11 +50,11 @@ namespace ApiCaixaEletronico.Service.Service
             }
         }
 
-        public Retorno ListarUsuario(long cpf, int senha)
+        public Retorno ListarUsuario(long cpf)
         {
             try
             {
-                var result = _caixaEletronicoDao.ListarUsuario(cpf, senha);
+                var result = _caixaEletronicoDao.ListarUsuario(cpf);
 
                 if(result.CpfCli == cpf && result.CpfCli !=0)
                 {

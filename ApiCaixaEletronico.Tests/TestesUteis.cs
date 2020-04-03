@@ -2,9 +2,6 @@
 using ApiCaixaEletronico.DTO.Context;
 using ApiCaixaEletronico.DTO.DTO;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ApiCaixaEletronico.Tests
 {
@@ -27,6 +24,20 @@ namespace ApiCaixaEletronico.Tests
                 SaldoConta = 1000,
                 SenhaConta = 12346,
                 TipoConta = 01
+            };
+            return conta;
+        }
+
+        public ClienteContext ListarClientes()
+        {
+            ClienteContext conta = new ClienteContext()
+            {
+                CpfCli = 12345678900,
+                Email = "teste@teste.com",
+                Id_Cliente = 1,
+                Nome_Cliente = "Teste",
+                RgCli = 12344567,
+                Telefone = 1123234545
             };
             return conta;
         }
@@ -64,15 +75,14 @@ namespace ApiCaixaEletronico.Tests
             ContasTransferenciaDTO contasTransferencia = new ContasTransferenciaDTO()
             {
                 Usuario_Agencia = 2020,
-                Usuario_Banco = 123,
+                Usuario_Banco = 341,
                 Usuario_Cpf = 12345678900,
-                Usuario_NumeroConta = 20201231,
-                Destino_Agencia = 2021,
-                Destino_Banco = 124,
-                Destino_Cpf = 12345678901,
-                Destino_NumeroConta = 20211241
+                Usuario_NumeroConta = 20203411,
+                Destino_Agencia = 2020,
+                Destino_Banco = 341,
+                Destino_Cpf = 12345678900,
+                Destino_NumeroConta = 20203411
             };
-
             return contasTransferencia;
         }
     }

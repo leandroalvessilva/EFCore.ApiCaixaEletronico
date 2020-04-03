@@ -1,12 +1,10 @@
 ﻿using ApiCaixaEletronico.DAO;
 using ApiCaixaEletronico.DAO.DAO;
 using ApiCaixaEletronico.DAO.Interface;
+using ApiCaixaEletronico.DTO.Context;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ApiCaixaEletronico.Tests.DAO
 {
@@ -61,7 +59,34 @@ namespace ApiCaixaEletronico.Tests.DAO
 
                 OperacoesBancariasDao = new OperacoesBancariasDAO(context, mockCaixaEletronico.Object);
 
-                var result = OperacoesBancariasDao.Sacar(testesUteis.Contas(), false, valorSacar);
+                mockCaixaEletronico.Setup(x => x.ValidarSaque(It.IsAny<decimal>(), It.IsAny<ContaContext>(), It.IsAny<CaixaEletronicoContext>())).Returns(true);
+
+                int[] arrayRetorno = new int[4];
+
+                mockCaixaEletronico.Setup(x => x.RetornarNotasNecessarias(It.IsAny<decimal>())).Returns(arrayRetorno);
+
+                var result = OperacoesBancariasDao.Sacar(testesUteis.Contas(), valorSacar);
+
+                Assert.IsNotNull(result);
+            }
+        }
+
+        [TestMethod]
+        public void OperacoesBancariasDAOTest_SacarC1()
+        {
+            var options = testesUteis.CriarDataBaseTeste("SacarDAOC1Teste");
+            decimal valorSacar = 100;
+
+            using (var context = new CommonDbContext(options))
+            {
+                context.Contas.Add(testesUteis.ListarContas());
+                context.Caixas.Add(testesUteis.ListarCaixas());
+
+                context.SaveChanges();
+
+                OperacoesBancariasDao = new OperacoesBancariasDAO(context, mockCaixaEletronico.Object);
+
+                var result = OperacoesBancariasDao.Sacar(testesUteis.Contas(), valorSacar);
 
                 Assert.IsNotNull(result);
             }
@@ -72,6 +97,7 @@ namespace ApiCaixaEletronico.Tests.DAO
         {
             var options = testesUteis.CriarDataBaseTeste("DepositarDAOTeste");
             decimal valorDepositar = 100;
+            string notasUtilizadas = "1,1,1,1";
 
             using (var context = new CommonDbContext(options))
             {
@@ -81,29 +107,33 @@ namespace ApiCaixaEletronico.Tests.DAO
 
                 OperacoesBancariasDao = new OperacoesBancariasDAO(context, mockCaixaEletronico.Object);
 
-                var result = OperacoesBancariasDao.Depositar(testesUteis.Contas(), false, valorDepositar);
+                var result = OperacoesBancariasDao.Depositar(testesUteis.Contas(), valorDepositar, notasUtilizadas);
 
-                Assert.IsNotNull(result);
+                Assert.AreEqual(false,result);
             }
         }
 
         [TestMethod]
-        public void OperacoesBancariasDAOTest_Transferir()
+        public void OperacoesBancariasDAOTest_DepositarC1()
         {
-            var options = testesUteis.CriarDataBaseTeste("TransferirDAOTeste");
-            decimal valorTransferir = 100;
+            var options = testesUteis.CriarDataBaseTeste("DepositarDAOC1Teste");
+            decimal valorDepositar = 100;
+            string notasUtilizadas = "1,1,1,1";
 
             using (var context = new CommonDbContext(options))
             {
                 context.Contas.Add(testesUteis.ListarContas());
+                context.Caixas.Add(testesUteis.ListarCaixas());
 
                 context.SaveChanges();
 
                 OperacoesBancariasDao = new OperacoesBancariasDAO(context, mockCaixaEletronico.Object);
 
-                var result = OperacoesBancariasDao.Transferir(testesUteis.ContasTransferencia(), valorTransferir);
+                mockCaixaEletronico.Setup(x => x.ValidarDeposito(It.IsAny<ContaContext>(), It.IsAny<decimal>(), It.IsAny<string[]>())).Returns(true);
 
-                Assert.IsNotNull(result);
+                var result = OperacoesBancariasDao.Depositar(testesUteis.Contas(), valorDepositar, notasUtilizadas);
+
+                Assert.AreEqual(true, result);
             }
         }
     }

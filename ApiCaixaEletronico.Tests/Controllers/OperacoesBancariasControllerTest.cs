@@ -7,8 +7,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ApiCaixaEletronico.Tests.Controllers
 {
@@ -60,10 +58,6 @@ namespace ApiCaixaEletronico.Tests.Controllers
             var okResult = result as OkObjectResult;
 
             Retorno contentResult = (Retorno)okResult.Value;
-
-            Assert.AreEqual(contentResult.Codigo, 500);
-            Assert.AreEqual(contentResult.Mensagem, "Internal server error");
-            Assert.IsNull(contentResult.Data);
         }
 
         [TestMethod]
@@ -73,7 +67,7 @@ namespace ApiCaixaEletronico.Tests.Controllers
             OperacaoDTO operacao = new OperacaoDTO();
             decimal valorSacar = 1000;
 
-            mockService.Setup(x => x.Sacar(It.IsAny<ContaDTO>(), It.IsAny<bool>(), It.IsAny<decimal>()))
+            mockService.Setup(x => x.Sacar(It.IsAny<ContaDTO>(), It.IsAny<decimal>()))
                 .Returns(new Retorno()
                 {
                     Codigo = 200,
@@ -81,7 +75,7 @@ namespace ApiCaixaEletronico.Tests.Controllers
                     Mensagem = "Saque realizado com sucesso."
                 });
 
-            IActionResult result = controller.Sacar(conta, false, valorSacar);
+            IActionResult result = controller.Sacar(conta, valorSacar);
             var okResult = result as OkObjectResult;
 
             Retorno contentResult = (Retorno)okResult.Value;
@@ -98,17 +92,13 @@ namespace ApiCaixaEletronico.Tests.Controllers
             ContaDTO conta = new ContaDTO();
             decimal valorSacar = 1000;
 
-            mockService.Setup(x => x.Sacar(It.IsAny<ContaDTO>(), It.IsAny<bool>(), It.IsAny<decimal>()))
+            mockService.Setup(x => x.Sacar(It.IsAny<ContaDTO>(), It.IsAny<decimal>()))
                 .Throws(new Exception("Internal server error"));
 
-            IActionResult result = controller.Sacar(conta, false, valorSacar);
+            IActionResult result = controller.Sacar(conta, valorSacar);
             var okResult = result as OkObjectResult;
 
             Retorno contentResult = (Retorno)okResult.Value;
-
-            Assert.AreEqual(contentResult.Codigo, 500);
-            Assert.AreEqual(contentResult.Mensagem, "Internal server error");
-            Assert.IsNull(contentResult.Data);
         }
 
         [TestMethod]
@@ -116,8 +106,9 @@ namespace ApiCaixaEletronico.Tests.Controllers
         {
             ContaDTO conta = new ContaDTO();
             decimal valorDepositar = 1000;
+            string notasDepositadas = "1,1,1,1";
 
-            mockService.Setup(x => x.Depositar(It.IsAny<ContaDTO>(), It.IsAny<bool>(), It.IsAny<decimal>()))
+            mockService.Setup(x => x.Depositar(It.IsAny<ContaDTO>(), It.IsAny<decimal>(), It.IsAny<string>()))
                 .Returns(new Retorno()
                 {
                     Codigo = 200,
@@ -125,7 +116,7 @@ namespace ApiCaixaEletronico.Tests.Controllers
                     Mensagem = "Depósito realizado com sucesso."
                 });
 
-            IActionResult result = controller.Depositar(conta, false, valorDepositar);
+            IActionResult result = controller.Depositar(conta, valorDepositar, notasDepositadas);
             var okResult = result as OkObjectResult;
 
             Retorno contentResult = (Retorno)okResult.Value;
@@ -141,62 +132,16 @@ namespace ApiCaixaEletronico.Tests.Controllers
         {
             ContaDTO conta = new ContaDTO();
             decimal valorDepositar = 1000;
+            string notasDepositadas = "1,1,1,1";
 
-            mockService.Setup(x => x.Depositar(It.IsAny<ContaDTO>(), It.IsAny<bool>(), It.IsAny<decimal>()))
+
+            mockService.Setup(x => x.Depositar(It.IsAny<ContaDTO>(), It.IsAny<decimal>(), It.IsAny<string>()))
                 .Throws(new Exception("Internal server error"));
 
-            IActionResult result = controller.Depositar(conta, false, valorDepositar);
+            IActionResult result = controller.Depositar(conta, valorDepositar, notasDepositadas);
             var okResult = result as OkObjectResult;
 
             Retorno contentResult = (Retorno)okResult.Value;
-
-            Assert.AreEqual(contentResult.Codigo, 500);
-            Assert.AreEqual(contentResult.Mensagem, "Internal server error");
-            Assert.IsNull(contentResult.Data);
-        }
-
-        [TestMethod]
-        public void OperacoesBancariasController_TransferirTest()
-        {
-            ContasTransferenciaDTO contasTransferencia = new ContasTransferenciaDTO();
-            decimal valorTransferir = 1000;
-
-            mockService.Setup(x => x.Transferir(It.IsAny<ContasTransferenciaDTO>(), It.IsAny<decimal>()))
-                .Returns(new Retorno()
-                {
-                    Codigo = 200,
-                    Data = JsonConvert.SerializeObject(true),
-                    Mensagem = "Depósito realizado com sucesso."
-                });
-
-            IActionResult result = controller.Transferir(contasTransferencia, valorTransferir);
-            var okResult = result as OkObjectResult;
-
-            Retorno contentResult = (Retorno)okResult.Value;
-
-            Assert.AreEqual(contentResult.Codigo, 200);
-            Assert.AreEqual(contentResult.Mensagem, "Depósito realizado com sucesso.");
-            Assert.IsNotNull(contentResult.Data);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(NullReferenceException))]
-        public void OperacoesBancariasController_TransferirExceptionTest()
-        {
-            ContasTransferenciaDTO contasTransferencia = new ContasTransferenciaDTO();
-            decimal valorTransferir = 1000;
-
-            mockService.Setup(x => x.Transferir(It.IsAny<ContasTransferenciaDTO>(), It.IsAny<decimal>()))
-                .Throws(new Exception("Internal server error"));
-
-            IActionResult result = controller.Transferir(contasTransferencia, valorTransferir);
-            var okResult = result as OkObjectResult;
-
-            Retorno contentResult = (Retorno)okResult.Value;
-
-            Assert.AreEqual(contentResult.Codigo, 500);
-            Assert.AreEqual(contentResult.Mensagem, "Internal server error");
-            Assert.IsNull(contentResult.Data);
         }
     }
 }

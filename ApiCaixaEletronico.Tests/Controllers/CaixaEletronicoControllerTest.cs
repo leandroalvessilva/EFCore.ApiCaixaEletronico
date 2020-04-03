@@ -7,8 +7,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ApiCaixaEletronico.Tests.Controllers
 {
@@ -60,10 +58,6 @@ namespace ApiCaixaEletronico.Tests.Controllers
             var okResult = result as OkObjectResult;
 
             Retorno contentResult = (Retorno)okResult.Value;
-
-            Assert.AreEqual(contentResult.Codigo, 500);
-            Assert.AreEqual(contentResult.Mensagem, "Internal server error");
-            Assert.IsNull(contentResult.Data);
         }
 
         [TestMethod]
@@ -71,7 +65,7 @@ namespace ApiCaixaEletronico.Tests.Controllers
         {
             ContaDTO conta = new ContaDTO();
 
-            mockService.Setup(x => x.ListarUsuario(It.IsAny<long>(), It.IsAny<int>()))
+            mockService.Setup(x => x.ListarUsuario(It.IsAny<long>()))
                 .Returns(new Retorno()
                 {
                     Codigo = 200,
@@ -79,7 +73,7 @@ namespace ApiCaixaEletronico.Tests.Controllers
                     Mensagem = "Consulta efetuada com sucesso."
                 });
 
-            IActionResult result = controller.ListarUsuario(testesUteis.Contas().CpfCli, testesUteis.ListarContas().SenhaConta);
+            IActionResult result = controller.ListarUsuario(testesUteis.Contas().CpfCli);
 
             var okResult = result as OkObjectResult;
 
@@ -94,18 +88,14 @@ namespace ApiCaixaEletronico.Tests.Controllers
         [ExpectedException(typeof(NullReferenceException))]
         public void OperacoesBancariasController_ListarUsuarioExceptionTest()
         {
-            mockService.Setup(x => x.ListarUsuario(It.IsAny<long>(), It.IsAny<int>()))
+            mockService.Setup(x => x.ListarUsuario(It.IsAny<long>()))
                 .Throws(new Exception("Internal server error"));
 
-            IActionResult result = controller.ListarUsuario(testesUteis.Contas().CpfCli, testesUteis.ListarContas().SenhaConta);
+            IActionResult result = controller.ListarUsuario(testesUteis.Contas().CpfCli);
 
             var okResult = result as OkObjectResult;
 
             Retorno contentResult = (Retorno)okResult.Value;
-
-            Assert.AreEqual(contentResult.Codigo, 500);
-            Assert.AreEqual(contentResult.Mensagem, "Internal server error");
-            Assert.IsNull(contentResult.Data);
         }
     }
 }

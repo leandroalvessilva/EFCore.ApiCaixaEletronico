@@ -14,11 +14,9 @@ namespace ApiCaixaEletronico.DTO.Context
         [Column("SENHACONTA")]
         public int SenhaConta { get; set; }
 
-        // criar tabela banco fk
         [Column("ID_BANCO")]
         public int Banco { get; set; }
 
-        // criar tabela agencia fk
         [Column("ID_AGENCIA")]
         public int Agencia { get; set; }
 

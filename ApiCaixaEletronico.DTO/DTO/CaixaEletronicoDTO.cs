@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ApiCaixaEletronico.DTO.DTO
+﻿namespace ApiCaixaEletronico.DTO.DTO
 {
     public class CaixaEletronicoDTO
     {

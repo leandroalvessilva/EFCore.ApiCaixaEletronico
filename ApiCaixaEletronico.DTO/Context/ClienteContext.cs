@@ -11,10 +11,10 @@ namespace ApiCaixaEletronico.DTO.Context
         [Column("NOME_CLI")]
         public string Nome_Cliente { get; set; }
 
-        [Column("CPF_CLI")]
+        [Column("CPFCLI")]
         public long CpfCli { get; set; }
 
-        [Column("RG_CLI")]
+        [Column("RGCLI")]
         public long RgCli { get; set; }
 
         [Column("TELEFONE")]

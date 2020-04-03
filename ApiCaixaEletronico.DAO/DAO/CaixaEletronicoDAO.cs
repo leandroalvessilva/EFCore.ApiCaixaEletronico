@@ -48,8 +48,16 @@ namespace ApiCaixaEletronico.DAO.DAO
                     {
                         adicionarNota = notasNecessarias[i] - notasDisponives[i];
 
-                        notasNecessarias[2] += (2 * adicionarNota);
-                        notasNecessarias[3] += (1 * adicionarNota);
+                        if (adicionarNota % 2 == 0)
+                        {
+                            var notasDeVinte = (adicionarNota * 50) / 20;
+                            notasNecessarias[2] += notasDeVinte;
+                        }
+                        else
+                        {
+                            notasNecessarias[2] += (2 * adicionarNota + 1);
+                            notasNecessarias[3] += (1 * adicionarNota % 2);
+                        }
                     }
                     else if (i == 2) //R$20
                     {
@@ -107,15 +115,15 @@ namespace ApiCaixaEletronico.DAO.DAO
         {
             if (contaUsuario.SaldoConta < valorSacar)
             {
-                return false;
+                throw new Exception("valor para saque maior que o saldo disponível em conta.");
             }
-            else if (valorSacar % 10 != 0)
+            else if (valorSacar % 10 != 0 || valorSacar == 0 || valorSacar > 2000)
             {
                 return false;
             }
             else if (caixaEletronico.Valor_Disponivel < valorSacar)
             {
-                throw new Exception("Valor para saque maior que o saldo disponível em caixa.");
+                throw new Exception("valor para saque maior que o saldo disponível em caixa.");
             }
             return true;
         }
@@ -132,7 +140,35 @@ namespace ApiCaixaEletronico.DAO.DAO
             }
             return true;
         }
-        
+
+        public bool ValidarDeposito(ContaContext conta, decimal valorDepositar, string[] notasDepositadas)
+        {
+            if (conta == null)
+            {
+                throw new Exception("Conta não consta em nosso banco de dados.Aguarde alguns minutos e tente novamente.");
+            }
+            else if (valorDepositar == 0 || valorDepositar > 5000)
+            {
+                return false;
+            }
+            else if (this.ConsultarNotasDisponiveis() != null)
+            {
+                var notasDisponives = this.ConsultarNotasDisponiveis();
+
+                notasDisponives[0] += Convert.ToInt32(notasDepositadas[0]);
+                notasDisponives[1] += Convert.ToInt32(notasDepositadas[1]);
+                notasDisponives[2] += Convert.ToInt32(notasDepositadas[2]);
+                notasDisponives[3] += Convert.ToInt32(notasDepositadas[3]);
+
+                if (notasDisponives[0] > 100 || notasDisponives[1] > 100 || notasDisponives[2] > 100
+                        || notasDisponives[3] > 100)
+                {
+                    throw new Exception("valor para depósito excede quantidade de notas máximas permitidas no caixa.");
+                }
+            }
+            return true;
+        }
+
         public bool Login(long cpf, int senha)
         {
             var contaUsario = _commonDbContext.Contas.Where(x => x.CpfCliente == cpf && x.SenhaConta == senha).FirstOrDefault();
@@ -144,22 +180,20 @@ namespace ApiCaixaEletronico.DAO.DAO
             return true;
         }
 
-        public ContaDTO ListarUsuario(long cpf, int senha)
+        public ContaDTO ListarUsuario(long cpf)
         {
             ContaDTO conta = new ContaDTO();
 
-            if (this.Login(cpf, senha))
-            {
-                var contaUsario = _commonDbContext.Contas.Where(x => x.CpfCliente == cpf && x.SenhaConta == senha).FirstOrDefault();
+            var clienteBanco = _commonDbContext.Clientes.Where(x => x.CpfCli == cpf).FirstOrDefault();
+            var contaUsario = _commonDbContext.Contas.Where(x => x.CpfCliente == cpf).FirstOrDefault();
 
-                conta.AgenciaContaCli = contaUsario.Agencia;
-                conta.BancoContaCli = contaUsario.Banco;
-                conta.CpfCli = contaUsario.CpfCliente;
-                conta.NumeroContaCli = contaUsario.NumeroContaCli;
-                conta.SaldoConta = contaUsario.SaldoConta;
+            conta.AgenciaContaCli = contaUsario.Agencia;
+            conta.BancoContaCli = contaUsario.Banco;
+            conta.NumeroContaCli = contaUsario.NumeroContaCli;
+            conta.SaldoConta = contaUsario.SaldoConta.ToString().Length < 12 ? Convert.ToDecimal(contaUsario.SaldoConta.ToString().PadRight(12, '0')) : contaUsario.SaldoConta;
+            conta.Nome_Cliente = clienteBanco.Nome_Cliente.Length < 40 ? clienteBanco.Nome_Cliente.PadRight(40, ' ') : clienteBanco.Nome_Cliente;
+            conta.CpfCli = contaUsario.CpfCliente;
 
-                return conta;
-            }
             return conta;
         }
     }
